@@ -1,0 +1,29 @@
+#include <WiFi.h>
+#include <MQTTClient.h>
+#include <ArduinoJson.h>
+
+// MQTT params  
+char mqttCloudServer[]     = "api.artik.cloud";
+int  mqttCloudPort         = 8883;
+char mqttCloudClientName[] = "ARTIK-Arduino"; // or whatever you prefer
+char mqttCloudUsername[]   = "_your_DEVICE_ID_goes_here_"; // FIX
+char mqttCloudPassword[]   = "_your_DEVICE_TOKEN_goes_here_"; // FIX
+char mqttCloudTopic[]      = "/v1.1/messages/_your_DEVICE_ID_goes_here_"; // FIX 
+float insTemp, desTemp, outTemp;
+char buf[100] = "\{\"insTemp\":19.3,  \"desTemp\":19.1, \"outTemp\":23.7 \}";
+
+WiFiSSLClient ipCloudStack;
+MQTTClient mqttCloudClient;
+  
+void setup() {
+  mqttCloudClient.begin(mqttCloudServer, mqttCloudPort, ipCloudStack);
+  mqttCloudClient.connect(mqttCloudClientName, mqttCloudUsername, mqttCloudPassword);
+}
+  
+void loop() {
+  mqttCloudClient.publish(mqttCloudTopic, buf);
+  exit(0);   
+} 
+
+void messageReceived(String topic, String payload, char * bytes, unsigned int length) {
+} 
